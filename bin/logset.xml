@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <log4net>
+        <appender name="RollingLogFileAppenderInfo" type="log4net.Appender.RollingFileAppender">
+            <file value="D:\logs\lobby\lobby-main-" />
+            <encoding value="utf-8" />
+            <appendToFile value="true" />
+            <datePattern value="yyyyMMdd'.log'" />
+            <staticLogFileName value="false" />
+            <layout type="log4net.Layout.PatternLayout">
+                <conversionPattern value="[%date] [%level] [%thread] [%logger] %message%newline" />
+            </layout>
+            <filter type="log4net.Filter.LevelRangeFilter">
+                <levelMin value="INFO" />
+                <levelMax value="FATAL" />
+            </filter>
+            <filter type="log4net.Filter.DenyAllFilter"/>
+        </appender>
+
+        <appender name="RollingLogFileAppenderDebug" type="log4net.Appender.RollingFileAppender">
+            <file value="D:\logs\lobby\lobby-debug-" />
+            <encoding value="utf-8" />
+            <appendToFile value="true" />
+            <datePattern value="yyyyMMdd'.log'" />
+            <staticLogFileName value="false" />
+            <threshold value="DEBUG"/>
+            <layout type="log4net.Layout.PatternLayout">
+                <conversionPattern value="[%date] [%level] [%thread] [%logger] %message%newline" />
+            </layout>
+            <filter type="log4net.Filter.LevelRangeFilter">
+                <levelMin value="DEBUG" />
+                <levelMax value="DEBUG" />
+            </filter>
+            <filter type="log4net.Filter.DenyAllFilter"/>
+        </appender>
+
+        <appender name="Console" type="log4net.Appender.ConsoleAppender">
+            <layout type="log4net.Layout.PatternLayout">
+                <conversionPattern value="[%date] [%level] [%thread] [%logger] %message%newline" />
+            </layout>
+        </appender>
+
+        <root>
+            <level value="DEBUG" />
+            <appender-ref ref="RollingLogFileAppenderInfo" />
+            <appender-ref ref="RollingLogFileAppenderDebug" />
+            <appender-ref ref="Console" />
+        </root>
+    </log4net>
+</configuration>

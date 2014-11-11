@@ -1,0 +1,6 @@
+#include "PlayerDetailInfoLoad.h"
+#include "AnimationInfoLoad.h"
+#include "PlayerDetailInfoPassing.h"
+#include "AnimationInfoPassing.h"
+#include "LeagueTimeSet.h"
+#include "StatusInfomation.h"
