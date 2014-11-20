@@ -14,7 +14,7 @@ StatusInfomation::result_object StatusInfomation::ProtocolProcess(const char * b
 	
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, request_infomation_no);
+    Deserialize((char*)buffer, size, request_infomation_no);
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -87,7 +87,7 @@ size_t StatusInfomation::Serialize(char* buffer, size_t buffer_size, uint16_t& r
     
 
 
-size_t StatusInfomation::Unserialize(char* buffer, size_t buffer_size, int32_t& infomation_no)
+size_t StatusInfomation::Deserialize(char* buffer, size_t buffer_size, int32_t& infomation_no)
 {
     size_t buffer_idx = 0;
 

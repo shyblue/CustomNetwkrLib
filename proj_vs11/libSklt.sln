@@ -4,17 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSklt", "libSklt.vcxproj", "{710D26ED-C846-41F5-9C5B-891DF053BFB7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dummyServer", "dummyServer.vcxproj", "{EC452232-12D1-4F7F-BD1C-63C1824CB8E2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{710D26ED-C846-41F5-9C5B-891DF053BFB7} = {710D26ED-C846-41F5-9C5B-891DF053BFB7}
-	EndProjectSection
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PacketGenerator", "..\packet_generator\PacketGenerator.pyproj", "{24E2974B-195B-4A15-B0DC-2425E2F8A8BB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tesClient", "tesClient.vcxproj", "{A9993CF5-6893-45EF-B39F-18A0AA773976}"
-	ProjectSection(ProjectDependencies) = postProject
-		{EC452232-12D1-4F7F-BD1C-63C1824CB8E2} = {EC452232-12D1-4F7F-BD1C-63C1824CB8E2}
-		{710D26ED-C846-41F5-9C5B-891DF053BFB7} = {710D26ED-C846-41F5-9C5B-891DF053BFB7}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

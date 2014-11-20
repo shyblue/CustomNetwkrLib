@@ -25,8 +25,8 @@ public:
 	virtual bool Validate();
 	virtual bool CheckEndmarker(char* buffer, size_t length);
 
-	virtual void SetHeaderSize(void* size);
-	virtual void SetDataSize(void* size);
+	virtual void SetHeaderSize(size_t size);
+	virtual void SetDataSize(size_t size);
 
 	virtual void HostToNetwork();
 	virtual void NetworkToHost();

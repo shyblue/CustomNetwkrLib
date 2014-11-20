@@ -3,6 +3,7 @@
 #include "Util/logger.h"
 #include "net/header.h"
 #include "net/sync_session_impl.h"
+#include "winsock2.h"
 
 SyncSessionImpl::SyncSessionImpl(boost::asio::io_service* io_service, Header* pheader) :
 	SessionBase(io_service),
@@ -180,13 +181,13 @@ bool SyncSessionImpl::Paser(char* buffer, const size_t buffer_size)
 size_t SyncSessionImpl::HeaderPaser(char* buffer, const size_t buffer_size)
 {
 	int availablebytes_transferred = recv(GetSocket().native(), buffer , static_cast<int>(m_pHeader->GetHeaderSize()), MSG_PEEK);
-	if (availablebytes_transferred <= 0) 
+	if (availablebytes_transferred != m_pHeader->GetHeaderSize()) 
 	{
 		ST_LOGGER.Error(L"recv error");
 		return 0;
 	}
 
-	size_t index = m_pHeader->Serialize(buffer, m_pHeader->GetHeaderSize());
+	size_t index = m_pHeader->Deserialize(buffer, m_pHeader->GetHeaderSize());
 
 	if ( !m_pHeader->Validate() )
 	{
@@ -201,6 +202,13 @@ size_t SyncSessionImpl::HeaderPaser(char* buffer, const size_t buffer_size)
 		ST_LOGGER.Error(L"invalid total_length[%d]", total_length);
 		return 0;
 	}
+
+	//std::stringstream hexCode;
+	//for (size_t idx = 0; idx < m_pHeader->GetTotalSize(); ++idx)
+	//{
+	//	hexCode << std::hex << static_cast<int16_t>(buffer[idx]);
+	//}
+	//ST_LOGGER.Trace("[SyncSessionImpl] [HEX CODE : %s] [%d:%d]", hexCode.str().c_str(),m_pHeader->GetTotalSize(),m_pHeader->GetBodySize());
 
 	return total_length;
 }
@@ -268,7 +276,7 @@ bool SyncSessionImpl::Close()
 			GetSocket().close(close_error);
 		}
 		else
-			ST_LOGGER.Error(L"IsConnection");
+			ST_LOGGER.Error("[SyncSessionImpl] Has not connection.");
 
 
 		if (close_error)
@@ -276,12 +284,13 @@ bool SyncSessionImpl::Close()
 	}
 	catch (boost::system::system_error& error)
 	{
-		ST_LOGGER.Error(L"error boost system error [%d]", error.code().value() );
+		boost::system::error_code ec = error.code();
+		ST_LOGGER.Error("[SyncSessionImpl] Boost System Error [%s : %d] %s",ec.category().name(),ec.value(),ec.message().c_str() );
 		return false;
 	}
 	catch (std::exception& exception)
 	{
-		ST_LOGGER.Error(L"exception what[%s]", exception.what());
+		ST_LOGGER.Error("[SyncSessionImpl] Exception what [%s]", exception.what());
 		return false;
 	}
 	return true;

@@ -1,8 +1,16 @@
 ﻿# -*- coding:utf-8 -*-
-import os, sys, sqlite3
+import os, sys, sqlite3, clr
+
+import System.Drawing
+import System.Windows.Forms
+
+#clr.AddReferenceByPartialName("System.Windows.Forms")
+#clr.AddReferenceByPartialName("System.Drawing")
+from System.Windows.Forms import *
+from System.Drawing import *
 
 # 사용할 인코딩 타입을 설정합니다
-reload(sys) 
+reload(sys)
 sys.setdefaultencoding('utf-8')
 
 type_dictionary ={
@@ -181,25 +189,23 @@ def make_header_string(class_name, send_args, recv_args) :
     result = '''
 #pragma once
 
-#ifndef BUSINESS_PROTOCOL_{0:s}_H_
-#define BUSINESS_PROTOCOL_{1:s}_H_
+#ifndef __{0:s}_H_
+#define __{0:s}_H_
 
 #include <boost/tuple/tuple.hpp>
 
-class {2:s} {{
+class {1:s} {{
 public :
     typedef boost::tuple<const char*, size_t> result_object;
     static result_object ProtocolProcess(const char * buffer, const size_t size);
 private :
     static result_object ErrorResult(int16_t& result_value);
-    static size_t Serialize(char* buffer, size_t buffer_size, {3:s});
-    static size_t Unserialize(char* buffer, size_t buffer_size, {4:s});
+    static size_t Serialize(char* buffer, size_t buffer_size, {2:s});
+    static size_t Deserialize(char* buffer, size_t buffer_size, {3:s});
 }};
 
 #endif
-'''.format(class_name.upper(), class_name.upper(), class_name, make_arg_ref_string(recv_args),
-           make_arg_ref_string(send_args))
-
+'''.format(class_name.upper(), class_name, make_arg_ref_string(recv_args),make_arg_ref_string(send_args))
     
     return result
 
@@ -235,7 +241,7 @@ def make_cpp_protocol_process(class_name, send_args, recv_args):
     {1:s}
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, {2:s});
+    Deserialize((char*)buffer, size, {2:s});
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -353,7 +359,7 @@ def make_cpp_unserialize(class_name, send_args) :
                 read_str += name + ' = BYTE_ORDER::network_to_host(' + name + ');\n\t'
     
     result = '''
-size_t {0:s}::Unserialize(char* buffer, size_t buffer_size, {1:s})
+size_t {0:s}::Deserialize(char* buffer, size_t buffer_size, {1:s})
 {{
     size_t buffer_idx = 0;
 
@@ -403,6 +409,14 @@ def write_generator(db_file) :
 
         print('make [%s]'% class_name)
 
+class HelloWorldForm(Form):
+
+    def __init__(self):
+        self.Text = 'Hello World'
+        self.Name = 'Hello World'
+
+form = HelloWorldForm()
+Application.Run(form)
 # Start packet generator
 if __name__ == "__main__" :
     

@@ -74,6 +74,7 @@
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -105,6 +106,8 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>D:\Work\libs\log4cxx-0.10.0\include;D:\Work\libs\boost\1_55_0;D:\Work\libs\tbb\include;$(SolutionDir)/../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +116,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\..\lib;D:\Work\libs\tbb\lib\intel64\vc11;D:\Work\libs\boost\1_55_0\lib64-msvc-11.0;D:\Work\libs\log4cxx-0.10.0\vs2012\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);libSklt_$(Configuration).lib;log4cxx_$(Platform)_$(Configuration)_Shared.lib</AdditionalDependencies>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -164,11 +170,6 @@
     <ClInclude Include="..\src\dummyServer\stdafx.h" />
     <ClInclude Include="..\src\dummyServer\targetver.h" />
     <ClInclude Include="..\src\dummyServer\header_cct.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="libSklt.vcxproj">
-      <Project>{710d26ed-c846-41f5-9c5b-891df053bfb7}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

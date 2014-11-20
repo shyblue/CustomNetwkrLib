@@ -18,7 +18,7 @@ PlayerDetailInfoLoad::result_object PlayerDetailInfoLoad::ProtocolProcess(const 
 	
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, request_leaguetime, request_pitcher_path_length, request_pitcher_path, request_fielder_path_length, request_fielder_path);
+    Deserialize((char*)buffer, size, request_leaguetime, request_pitcher_path_length, request_pitcher_path, request_fielder_path_length, request_fielder_path);
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -88,7 +88,7 @@ size_t PlayerDetailInfoLoad::Serialize(char* buffer, size_t buffer_size, uint16_
     
 
 
-size_t PlayerDetailInfoLoad::Unserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime, int32_t& pitcher_path_length, std::string& pitcher_path, uint32_t& fielder_path_length, std::string& fielder_path)
+size_t PlayerDetailInfoLoad::Deserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime, int32_t& pitcher_path_length, std::string& pitcher_path, uint32_t& fielder_path_length, std::string& fielder_path)
 {
     size_t buffer_idx = 0;
 

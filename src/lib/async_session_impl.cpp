@@ -8,7 +8,7 @@
 
 #include "net/network_define.h"
 #include "net/async_session_impl.h"
-#include "net/asyn_session_pool.h"
+#include "net/async_session_pool.h"
 #include "net/packet_worker_manager.h"
 #include "net/header.h"
 #include "util/common_pool.h"
@@ -19,7 +19,6 @@
 
 AsyncSessionImpl::AsyncSessionImpl(boost::asio::io_service* io_service, Header* p_header,const PacketWorkerManagerPtr& packet_worker_manager) :
 	SessionBase(io_service)
-	,m_spHeader(p_header)
 	,m_spWorkerManager(packet_worker_manager)
 	,m_szHeaderBuffer(0)
 	,m_szBodyBuffer(0)
@@ -29,6 +28,7 @@ AsyncSessionImpl::AsyncSessionImpl(boost::asio::io_service* io_service, Header* 
 	,m_sizeOfMaxBuffer(ST_CONFIG()->GetConfigureData<size_t>("CONFIGURE.SESSION_BUFFER_MAX", 32768))
 	,m_strand(*io_service)
 {
+	m_spHeader.reset(p_header);
 }
 
 AsyncSessionImpl::~AsyncSessionImpl()
@@ -79,7 +79,7 @@ bool AsyncSessionImpl::ReadHeader( const boost::system::error_code & error, size
 	ST_LOGGER.Trace("[AsyncSessionImpl][ReadHeader] bytes_transferred = %d", bytes_transferred);
 	if( error )
 	{
-		ST_LOGGER.Error("[AsyncSessionImpl][ReadHeader] Error occured [%s : %d] %s", error.category().name(),error.value(),error.message().c_str());
+		ST_LOGGER.Error("[AsyncSessionImpl][ReadHeader] Error occurred [%s : %d] %s", error.category().name(),error.value(),error.message().c_str());
 		Close();
 		return false;
 	}
@@ -164,24 +164,18 @@ void AsyncSessionImpl::SendProcess(const char* data, const size_t data_length)
 	{
 		ST_LOGGER.Trace("[AsyncSessionImpl][SendProcess] Send packet request [%d]", data_length);
 		auto self(shared_from_this());
-		boost::asio::spawn( m_strand ,
-		[this,self,data,&data_length](boost::asio::yield_context yield)
+		
+		boost::asio::async_write(m_tcpSocket,boost::asio::buffer(data,data_length),
+		[this,self,data,&data_length](boost::system::error_code error,size_t bytes_transferred)
 		{
-			boost::system::error_code error;
-			size_t bytes_transferred;
-			// 패킷 보내기
-			bytes_transferred = m_tcpSocket.async_send(boost::asio::buffer(data,data_length),yield[error]);
-
+			COMMON_POOL::Delete((char*)data, data_length);
 			if(error)
 			{
 				ST_LOGGER.Error("[Packet Send error [%s : %d] %s",error.category().name(),error.value(),error.message().c_str());
 				Close();
 				return;
 			}
-
-			ST_LOGGER.Trace("[AsyncSessionImpl][SendProcess] Send packet complete [%d]", data_length);
-		}
-		);
+		});
 	}
 	catch(std::exception exception)
 	{

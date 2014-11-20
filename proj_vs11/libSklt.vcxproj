@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\lib\async_session_impl.cpp" />
-    <ClCompile Include="..\src\lib\asyn_session_pool.cpp" />
+    <ClCompile Include="..\src\lib\async_session_pool.cpp" />
     <ClCompile Include="..\src\lib\byte_order.cpp" />
     <ClCompile Include="..\src\lib\configure.cpp" />
     <ClCompile Include="..\src\lib\sync_session_pool.cpp" />
@@ -46,7 +46,7 @@
     <ClInclude Include="..\include\handler\handler_manager.h" />
     <ClInclude Include="..\include\library.h" />
     <ClInclude Include="..\include\net\async_session_impl.h" />
-    <ClInclude Include="..\include\net\asyn_session_pool.h" />
+    <ClInclude Include="..\include\net\async_session_pool.h" />
     <ClInclude Include="..\include\net\sync_session_pool.h" />
     <ClInclude Include="..\include\net\header.h" />
     <ClInclude Include="..\include\net\header_factory.h" />
@@ -159,6 +159,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>D:\Work\libs\log4cxx-0.10.0\include;D:\Work\libs\boost\1_55_0;D:\Work\libs\tbb\include;D:\Work\FeatureTest\skltServer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -167,6 +168,9 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

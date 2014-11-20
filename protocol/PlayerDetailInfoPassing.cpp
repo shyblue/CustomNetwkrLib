@@ -15,7 +15,7 @@ PlayerDetailInfoPassing::result_object PlayerDetailInfoPassing::ProtocolProcess(
 	
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, request_user_uid, request_player_type);
+    Deserialize((char*)buffer, size, request_user_uid, request_player_type);
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -90,7 +90,7 @@ size_t PlayerDetailInfoPassing::Serialize(char* buffer, size_t buffer_size, uint
     
 
 
-size_t PlayerDetailInfoPassing::Unserialize(char* buffer, size_t buffer_size, uint64_t& user_uid, uint8_t& player_type)
+size_t PlayerDetailInfoPassing::Deserialize(char* buffer, size_t buffer_size, uint64_t& user_uid, uint8_t& player_type)
 {
     size_t buffer_idx = 0;
 

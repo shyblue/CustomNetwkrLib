@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef BUSINESS_PROTOCOL_PLAYERDETAILINFOPASSING_H_
-#define BUSINESS_PROTOCOL_PLAYERDETAILINFOPASSING_H_
+#ifndef __PLAYERDETAILINFOPASSING_H_
+#define __PLAYERDETAILINFOPASSING_H_
 
 #include <boost/tuple/tuple.hpp>
 
@@ -13,7 +13,7 @@ public :
 private :
     static result_object ErrorResult(int16_t& result_value);
     static size_t Serialize(char* buffer, size_t buffer_size, uint16_t& result_value, uint32_t& detailinfo_length, char*& detailinfo);
-    static size_t Unserialize(char* buffer, size_t buffer_size, uint64_t& user_uid, uint8_t& player_type);
+    static size_t Deserialize(char* buffer, size_t buffer_size, uint64_t& user_uid, uint8_t& player_type);
 };
 
 #endif

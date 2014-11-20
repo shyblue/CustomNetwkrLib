@@ -19,7 +19,7 @@ AnimationInfoLoad::result_object AnimationInfoLoad::ProtocolProcess(const char *
 	
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, request_leaguetime, request_league_no, request_animation_post_path_length, request_animation_post_path, request_animation_regular_path_length, request_animation_regular_path);
+    Deserialize((char*)buffer, size, request_leaguetime, request_league_no, request_animation_post_path_length, request_animation_post_path, request_animation_regular_path_length, request_animation_regular_path);
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -89,7 +89,7 @@ size_t AnimationInfoLoad::Serialize(char* buffer, size_t buffer_size, uint16_t& 
     
 
 
-size_t AnimationInfoLoad::Unserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime, uint32_t& league_no, uint32_t& animation_post_path_length, std::string& animation_post_path, uint32_t& animation_regular_path_length, std::string& animation_regular_path)
+size_t AnimationInfoLoad::Deserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime, uint32_t& league_no, uint32_t& animation_post_path_length, std::string& animation_post_path, uint32_t& animation_regular_path_length, std::string& animation_regular_path)
 {
     size_t buffer_idx = 0;
 

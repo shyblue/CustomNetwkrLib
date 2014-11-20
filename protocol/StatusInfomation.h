@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef BUSINESS_PROTOCOL_STATUSINFOMATION_H_
-#define BUSINESS_PROTOCOL_STATUSINFOMATION_H_
+#ifndef __STATUSINFOMATION_H_
+#define __STATUSINFOMATION_H_
 
 #include <boost/tuple/tuple.hpp>
 
@@ -13,7 +13,7 @@ public :
 private :
     static result_object ErrorResult(int16_t& result_value);
     static size_t Serialize(char* buffer, size_t buffer_size, uint16_t& result_value, uint32_t& use_memory);
-    static size_t Unserialize(char* buffer, size_t buffer_size, int32_t& infomation_no);
+    static size_t Deserialize(char* buffer, size_t buffer_size, int32_t& infomation_no);
 };
 
 #endif

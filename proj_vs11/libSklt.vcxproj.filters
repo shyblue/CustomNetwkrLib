@@ -23,9 +23,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\lib\asyn_session_pool.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\lib\async_session_impl.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
@@ -80,6 +77,9 @@
     <ClCompile Include="..\src\lib\skeleton_server.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\lib\async_session_pool.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\db\db_connector.h">
@@ -92,9 +92,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\net\async_session_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\net\asyn_session_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\net\header.h">
@@ -182,6 +179,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\net\skeleton_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\net\async_session_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -62,6 +62,5 @@ void PacketWorker::Processing(PacketInfo& packet)
 	if(resultObject.get<0>() && resultObject.get<1>() > 0)
 	{
 		packet.m_pAsyncSessionImp->Send(resultObject.get<0>(), resultObject.get<1>());
-		COMMON_POOL::Delete((char*)resultObject.get<0>(), resultObject.get<1>() );
 	}
 }

@@ -17,8 +17,8 @@ public:
 	virtual size_t Deserialize(char* buffer, size_t buffersize) = 0;
 	virtual bool Validate() = 0;
 	virtual bool CheckEndmarker(char* buffer, size_t length) = 0;
-	virtual void SetHeaderSize(void* size) = 0;
-	virtual void SetDataSize(void* size) = 0;
+	virtual void SetHeaderSize(size_t size) = 0;
+	virtual void SetDataSize(size_t size) = 0;
 
 	virtual void HostToNetwork()  {};
 	virtual void NetworkToHost()  {};

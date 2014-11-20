@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef BUSINESS_PROTOCOL_ANIMATIONINFOLOAD_H_
-#define BUSINESS_PROTOCOL_ANIMATIONINFOLOAD_H_
+#ifndef __ANIMATIONINFOLOAD_H_
+#define __ANIMATIONINFOLOAD_H_
 
 #include <boost/tuple/tuple.hpp>
 
@@ -13,7 +13,7 @@ public :
 private :
     static result_object ErrorResult(int16_t& result_value);
     static size_t Serialize(char* buffer, size_t buffer_size, uint16_t& result_value);
-    static size_t Unserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime, uint32_t& league_no, uint32_t& animation_post_path_length, std::string& animation_post_path, uint32_t& animation_regular_path_length, std::string& animation_regular_path);
+    static size_t Deserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime, uint32_t& league_no, uint32_t& animation_post_path_length, std::string& animation_post_path, uint32_t& animation_regular_path_length, std::string& animation_regular_path);
 };
 
 #endif

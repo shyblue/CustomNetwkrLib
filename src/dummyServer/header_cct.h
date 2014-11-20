@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _HEADER_CCT_H_
 #define _HEADER_CCT_H_
@@ -25,8 +25,8 @@ public:
 	virtual bool Validate();
 	virtual bool CheckEndmarker(char* buffer, size_t length);
 
-	virtual void SetHeaderSize(void* size);
-	virtual void SetDataSize(void* size);
+	virtual void SetHeaderSize(size_t size);
+	virtual void SetDataSize(size_t size);
 
 	virtual void HostToNetwork();
 	virtual void NetworkToHost();
@@ -37,7 +37,7 @@ public:
 	PKHEADER_MIN -- from SDSockClient.cs
 	public byte cVer;
 	[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-	public byte[] szSign = new byte[2];	    // data�κ�
+	public byte[] szSign = new byte[2];	    // data부분
 	public ushort wType;
 	public ushort dwSize;
 	public int nHandle;

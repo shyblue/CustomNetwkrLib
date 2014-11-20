@@ -16,7 +16,7 @@ AnimationInfoPassing::result_object AnimationInfoPassing::ProtocolProcess(const 
 	
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, request_user_uid, request_leaguetime, request_league_no);
+    Deserialize((char*)buffer, size, request_user_uid, request_leaguetime, request_league_no);
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -91,7 +91,7 @@ size_t AnimationInfoPassing::Serialize(char* buffer, size_t buffer_size, uint16_
     
 
 
-size_t AnimationInfoPassing::Unserialize(char* buffer, size_t buffer_size, uint64_t& user_uid, uint64_t& leaguetime, uint32_t& league_no)
+size_t AnimationInfoPassing::Deserialize(char* buffer, size_t buffer_size, uint64_t& user_uid, uint64_t& leaguetime, uint32_t& league_no)
 {
     size_t buffer_idx = 0;
 

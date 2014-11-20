@@ -2,6 +2,7 @@
 #include "header_cct.h"
 #include "util/byte_order.h"
 #include "util/memory_manager.h"
+#include "util/logger.h"
 
 HeaderCCT::HeaderCCT(void)
 	: m_version(0x01),m_sign1('S'),m_sign2('M'),m_protocolNo(0),m_dataLen(0),m_handle(0),m_findSig('P')
@@ -72,13 +73,21 @@ bool HeaderCCT::CheckEndmarker(char* buffer,  size_t length)
 	return true;
 }
 
-void HeaderCCT::SetHeaderSize(void* size)
+void HeaderCCT::SetHeaderSize(size_t size)
 {
-	m_sizeOfHeader = *(uint32_t*)size;
+	m_sizeOfHeader = size;
 }
-void HeaderCCT::SetDataSize(void* size)
+void HeaderCCT::SetDataSize(size_t size)
 {
-	m_dataLen = *(uint32_t*)size;
+	if(size > MAXUINT16)
+	{
+		ST_LOGGER.Error("[HeaderCCT] Data size overflow [%d:%d]",MAXUINT16,size);
+		m_dataLen = MAXUINT16;
+	}
+	else
+	{
+		m_dataLen = (uint16_t)size;
+	}
 }
 
 void HeaderCCT::HostToNetwork()

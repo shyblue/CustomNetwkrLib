@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef NETWORK_SERVERBASE_H_
 #define NETWORK_SERVERBASE_H_
@@ -24,7 +24,7 @@ public:
 	explicit SkltServer( const int16_t port, HandlerManager *handler_manager);
 	~SkltServer(void);
 
-	bool Initiazize(HandlerManager * handler_manager);
+	bool Initialize(HandlerManager * handler_manager);
 	void Run();
 
 private:

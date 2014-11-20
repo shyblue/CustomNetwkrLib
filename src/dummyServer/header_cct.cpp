@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "header_cct.h"
 #include "util/byte_order.h"
 #include "util/memory_manager.h"
@@ -72,13 +72,21 @@ bool HeaderCCT::CheckEndmarker(char* buffer,  size_t length)
 	return true;
 }
 
-void HeaderCCT::SetHeaderSize(void* size)
+void HeaderCCT::SetHeaderSize(size_t size)
 {
-	m_sizeOfHeader = *(uint32_t*)size;
+	m_sizeOfHeader = size;
 }
-void HeaderCCT::SetDataSize(void* size)
+void HeaderCCT::SetDataSize(size_t size)
 {
-	m_dataLen = *(uint32_t*)size;
+	if(size > MAXUINT16)
+	{
+		ST_LOGGER.Error("[HeaderCCT] Data size overflow [%d:%d]",MAXUINT16,size);
+		m_dataLen = MAXUINT16;
+	}
+	else
+	{
+		m_dataLen = (uint16_t)size;
+	}
 }
 
 void HeaderCCT::HostToNetwork()

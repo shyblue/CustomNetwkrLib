@@ -48,7 +48,7 @@ int _tmain()
 
 	ST_LOGGER.Trace("=============== Skeleton Server Start ===================");
 
-	SkltServer dummyServer(pConf->GetConfigureData<int16_t>("CONFIGURE.PORT", 10399), pHandlerManager);
+	SkltServer dummyServer(pConf->GetConfigureData<int16_t>("CONFIGURE.PORT", 12800), pHandlerManager);
 	ST_LOGGER.Trace(" Server Run()" );
 	dummyServer.Run();
 
@@ -73,18 +73,28 @@ boost::tuple<const char*, size_t> TestProtocol(const char* buffer,  size_t buffe
 	}
 	ST_LOGGER.Info("[Packet Handler : TestProtocol] Value[%d] Test nCnt[%d] Elapsemillisec [%d] MilliSec",testValue, nCnt, test_sw.GetElapsedmilliSec().count());
 
-	int idxResponse = 0;
-	char*  szResponseBuffer = COMMON_POOL::New(header.GetHeaderSize()+sizeof(idxResponse));
+	int32_t idxResponse = 0;
+	idxResponse = 1004 + nCnt;
 	header.Set('S','M','C',101,sizeof(idxResponse),(int32_t)1,0x01);
+
+	char*  szResponseBuffer = COMMON_POOL::New(header.GetTotalSize());
+	memset(szResponseBuffer,0x0,16);
+
 	header.Serialize(szResponseBuffer,header.GetTotalSize());
+	index = header.GetHeaderSize();
+	MEMORY_MANAGER::WriteToBuffer(szResponseBuffer,header.GetTotalSize(),index,&idxResponse);
 
-	idxResponse = testValue + nCnt;
-	ST_LOGGER.Info("[Packet Handler : TestProtocol] Response[%d]", idxResponse);
+	//std::stringstream hexCode;
+	//for (size_t idx = 0; idx < header.GetTotalSize(); ++idx)
+	//{
+	//	hexCode << std::hex << static_cast<int16_t>(szResponseBuffer[idx]);
+	//}
+	//ST_LOGGER.Info("[Packet Handler : TestProtocol] [HEX CODE : %s][%d] Response[%d]", hexCode.str().c_str(),header.GetTotalSize(),idxResponse);
 
-	return boost::tuple<const char*, size_t>(const_cast<const char*>(szResponseBuffer), (const size_t&)sizeof(idxResponse));
+	return boost::tuple<const char*, size_t>(const_cast<const char*>(szResponseBuffer), (const size_t&)header.GetTotalSize());
 }
 
 void HandlerSet(HandlerManager *handler_manager)
 {
-	handler_manager->ProtocolRegister(101, TestProtocol);
+	handler_manager->ProtocolRegister(101, TestProtocol );
 }

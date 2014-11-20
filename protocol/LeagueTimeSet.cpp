@@ -14,7 +14,7 @@ LeagueTimeSet::result_object LeagueTimeSet::ProtocolProcess(const char * buffer,
 	
 
     // 클라이언트로부터 전달받은 데이터를 처리 합니다.
-    Unserialize((char*)buffer, size, request_leaguetime);
+    Deserialize((char*)buffer, size, request_leaguetime);
 
     int16_t result_value = 0;
     // 버퍼사이즈 점검
@@ -84,7 +84,7 @@ size_t LeagueTimeSet::Serialize(char* buffer, size_t buffer_size, uint16_t& resu
     
 
 
-size_t LeagueTimeSet::Unserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime)
+size_t LeagueTimeSet::Deserialize(char* buffer, size_t buffer_size, uint64_t& leaguetime)
 {
     size_t buffer_idx = 0;
 

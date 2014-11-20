@@ -1,6 +1,6 @@
-#include "net/async_session_impl.h"
+ï»¿#include "net/async_session_impl.h"
 #include "net/sync_session_pool.h"
-#include "net/asyn_session_pool.h"
+#include "net/async_session_pool.h"
 #include "net/packet_worker_manager.h"
 #include "net/skeleton_server.h"
 #include "util/configure.h"
@@ -10,14 +10,14 @@
 SkltServer::SkltServer( const int16_t port, HandlerManager *handler_manager) :
 	m_ioService(), m_ioAcceptor(m_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
 {
-	Initiazize(handler_manager);
+	Initialize(handler_manager);
 	StartAccept();
 }
 
 SkltServer::~SkltServer(void)
 {
 }
-bool SkltServer::Initiazize(HandlerManager * p_handler_manager)
+bool SkltServer::Initialize(HandlerManager * p_handler_manager)
 {
 	m_spPacketWorkerManager.reset(new PacketWorkerManager(ST_CONFIG()->GetConfigureData<size_t>("CONFIGURE.WORKER_COUNT", 4), p_handler_manager));
 	m_spAsyncSessionPool.reset(new AsyncSessionPool(&m_ioService, m_spPacketWorkerManager, ST_CONFIG()->GetConfigureData<size_t>("CONFIGURE.SESSION_POOL_COUNT", 10000)));
@@ -42,7 +42,7 @@ bool SkltServer::StartAccept()
 			if( !pOptSession || !(pOptSession.get()))
 			{
 				ST_LOGGER.Error("[ServerBase][AsyncSessionPool] Can't get AsyncSession from Pool [%s]");		
-				// TODO: SessionÀ» ÇÒ´ç¹ŞÁö ¸øÇßÀ»¶§, ÇÒ´ç¹ŞÁö ¸øÇÑ ÀÌÀ¯¸¦ Ã£°í, ÇØ°áÀ» ÇØ¾ß ÇÑ´Ù.
+				// TODO: Sessionì„ í• ë‹¹ë°›ì§€ ëª»í–ˆì„ë•Œ, í• ë‹¹ë°›ì§€ ëª»í•œ ì´ìœ ë¥¼ ì°¾ê³ , í•´ê²°ì„ í•´ì•¼ í•œë‹¤.
 			}
 
 			AsyncSessionImplPtr pSession = pOptSession.get();
