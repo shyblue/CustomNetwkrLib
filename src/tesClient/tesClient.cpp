@@ -48,7 +48,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	size_t index = 0;
 	int sendValue=0;
 	int recvValue=0;
-	for(int i=0;i<10;i++)
+	for(int i=0;i<1000;i++)
 	{
 		sendValue = i+1;
 		index = pHeader->GetHeaderSize();
@@ -64,10 +64,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		MEMORY_MANAGER::ReadFromBuffer(recvBuffer,recvBufferSize,index,&recvValue,sizeof(recvValue));
 		ST_LOGGER.Info("[Test Client][Recv Data] [%d]", recvValue);
 
-		Sleep(100);
+		Sleep(10);
 	}
 
 	testClient.Close();
+
+	Sleep(1000);
 
 	return 0;
 }

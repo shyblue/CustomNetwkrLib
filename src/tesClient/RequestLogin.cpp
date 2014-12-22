@@ -4,6 +4,7 @@
 #include <util/logger.h>
 #include <util/common_pool.h>
 #include <util/byte_order.h>
+#include <util/logger.h>
 
 #include "RequestLogin.h"
 
@@ -25,8 +26,8 @@ RequestLogin::result_object RequestLogin::ProtocolProcess(const char * buffer, c
 	// check size between buffer and variable
 	if(size != sizeOfProtocol )
 	{
-//		ST_LOGGER.Error("[RequestLogin] buffer Size Error [%d:%d]", size, sizeof(result_value) );
-//		return ErrorResult(result_value);
+		ST_LOGGER.Error("[RequestLogin] buffer Size Error [%d:%d]", size, sizeof(resultValue) );
+		return ErrorResult(resultValue);
 	}
 
 	// Response protocol data
@@ -89,6 +90,5 @@ size_t RequestLogin::Deserialize(char* buffer, size_t buffer_size,uint16_t &size
 {
 	size_t bufferindex = 0;
 
-	//ST_LOGGER.Trace("[RequestLogin][InputData] infomation_no[%d]", infomation_no);
 	return bufferindex;
 }

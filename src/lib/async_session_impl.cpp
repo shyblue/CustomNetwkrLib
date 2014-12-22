@@ -100,7 +100,7 @@ bool AsyncSessionImpl::ReadHeader( const boost::system::error_code & error, size
 		return false;
 	}
 
-	m_sizeOfBodyBuffer =  (size_t)(m_spHeader->GetBodySize());
+	m_sizeOfBodyBuffer =  m_spHeader->GetBodySize();
 
 	if( AsyncSessionImpl::m_sizeOfMaxBuffer < m_sizeOfBodyBuffer ) 
 	{
@@ -248,18 +248,19 @@ void AsyncSessionImpl::MakeHexCode()
 	if (HEX_CODE.compare("Y") == 0)
 	{
 		std::stringstream hexCode;
-		for (size_t idx = 0; idx < m_spHeader->GetTotalSize(); ++idx)
+
+		for(size_t idx=0;idx<m_spHeader->GetHeaderSize();++idx)
 		{
-			if ( idx < m_spHeader->GetHeaderSize() )
-			{
-				hexCode << std::hex << static_cast<int16_t>(m_szHeaderBuffer[idx]);
-			}
-			else
-			{
-				size_t body_idx = idx - m_spHeader->GetHeaderSize();
-				hexCode << std::hex << static_cast<int16_t>(m_szBodyBuffer[body_idx]);
-			}
+			hexCode << std::hex << std::setfill('0') << std::setw(2) << static_cast<int16_t>((BYTE)m_szHeaderBuffer[idx]);
+			if(idx < m_spHeader->GetHeaderSize()-1) hexCode << " ";
 		}
-		ST_LOGGER.Info("HEX CODE : %s", hexCode.str().c_str());
+		hexCode << "|";
+		for(size_t idx=0;idx<m_spHeader->GetBodySize();++idx)
+		{
+			hexCode << std::hex << std::setfill('0') << std::setw(2) << static_cast<int16_t>((BYTE)m_szBodyBuffer[idx]);
+			if(idx < m_spHeader->GetBodySize()-1) hexCode << " ";
+		}
+
+		ST_LOGGER.Trace("[PACKET HEX CODE] [%s]", hexCode.str().c_str());
 	}
 }
