@@ -4,7 +4,7 @@
 	<appender name="CONSOLE" class="org.apache.log4j.rolling.ConsoleAppender">
 		<param name="Append" value="true"/>
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-4p] %m%n"/>
+			<param name="ConversionPattern" value="[%date] [%level] [%thread] [%logger] %m%n"/>
 		</layout>
 	</appender>
 
@@ -14,7 +14,7 @@
 			<param name="fileNamePattern" value="log/server.%d{yyyyMM}.log"/>
 		</rollingPolicy>
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss},%-4p,%m%n"/>
+			<param name="ConversionPattern" value="[%date] [%level] [%thread] [%logger] %m%n"/>
 		</layout>
 	</appender>
 

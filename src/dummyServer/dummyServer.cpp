@@ -46,7 +46,7 @@ int _tmain()
 	}
 	ST_LOGGER.Trace("[Loaded protocol list][End]");
 
-	ST_LOGGER.Trace("=============== Skeleton Server Start ===================");
+	ST_LOGGER.Info("=============== Dummy Server by libSkeleton Start ===================");
 
 	SkltServer dummyServer(pConf->GetConfigureData<int16_t>("CONFIGURE.PORT", 12800), pHandlerManager);
 	ST_LOGGER.Trace(" Server Run()" );

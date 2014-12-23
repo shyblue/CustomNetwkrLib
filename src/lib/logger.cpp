@@ -15,7 +15,8 @@ void Logger::Create(const std::string& config_name)
 {
 	try
 	{
-		m_pLogger = log4cxx::LoggerPtr(log4cxx::Logger::getLogger(config_name.c_str()));
+		log4cxx::xml::DOMConfigurator::configureAndWatch( config_name );
+		m_pLogger = log4cxx::Logger::getRootLogger();
 	}
 	catch (std::exception& e)
 	{
