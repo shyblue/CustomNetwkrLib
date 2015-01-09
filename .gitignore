@@ -23,7 +23,6 @@ $RECYCLE.BIN/
 *.tlog
 *.ilk
 *.ipch
-*.pch
 *.log
 *.idb
 *.lastbuild*
@@ -38,3 +37,4 @@ $RECYCLE.BIN/
 *.exe
 *.pdb
 *.lib
+proj_vs11/Release/
