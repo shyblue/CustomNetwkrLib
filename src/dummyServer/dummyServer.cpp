@@ -14,7 +14,7 @@ void HandlerSet(HandlerManager *handler_manager);
 
 int _tmain()
 {
-	ST_LOGGER.Create("log4cxx.xml");
+	ST_LOGGER.Create("log4cxx.xml");																			   z
 	ST_LOGGER.Info("Dummy Server Start!!!");
 
 	srand((uint32_t)time(NULL));
