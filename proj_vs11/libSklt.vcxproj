@@ -113,8 +113,10 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>D:\Work\libs\log4cxx-0.10.0\include;D:\Work\libs\boost\1_55_0;D:\Work\libs\tbb\include;$(SolutionDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <BrowseInformation>true</BrowseInformation>
+      <AdditionalIncludeDirectories>$(BOOST_ROOT);$(TBB_ROOT)\include;$(LOG4CXX_ROOT)\include;$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <BrowseInformation>false</BrowseInformation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,7 +135,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\Work\libs\log4cxx-0.10.0\include;D:\Work\libs\boost\1_55_0;D:\Work\libs\tbb\include;$(SolutionDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_ROOT);$(TBB_ROOT)\include;$(LOG4CXX_ROOT)\include;$(SolutionDir)..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

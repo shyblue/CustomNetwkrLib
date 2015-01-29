@@ -38,4 +38,5 @@ $RECYCLE.BIN/
 *.exe
 *.pdb
 *.lib
+target/
 proj_vs11/Release/
