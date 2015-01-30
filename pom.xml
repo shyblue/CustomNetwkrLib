@@ -23,26 +23,26 @@
 	<version>1.0</version>
 </parent>
 
-<groupId>poker-server</groupId>
-  <artifactId>custom-network-lib</artifactId>
-  <version>1.0-pre1</version>
-  <packaging>pom</packaging>  
+<groupId>internal.poker.poker-server</groupId>
+<artifactId>custom-network-lib</artifactId>
+<version>1.0-SNAPSHOT</version>
+<packaging>pom</packaging>
 <name>Session server based on new common network library</name>
 
 <dependencyManagement>
 	<dependencies>
-    <dependency>
-      <groupId>log4cxx</groupId>
-      <artifactId>log4cxx</artifactId>
-      <version>0.10.0</version>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>tbb</groupId>
-      <artifactId>tbb</artifactId>
-      <version>4.3.update2</version>
-      <type>zip</type>
-    </dependency>	
+	<dependency>
+		<groupId>log4cxx</groupId>
+		<artifactId>log4cxx</artifactId>
+		<version>0.10.0</version>
+		<type>zip</type>
+	</dependency>
+	<dependency>
+		<groupId>tbb</groupId>
+		<artifactId>tbb</artifactId>
+		<version>4.3.update2</version>
+		<type>zip</type>
+	</dependency>	
 		<dependency>
 			<groupId>internal.build</groupId>
 			<artifactId>conf-overlay-windows</artifactId>
@@ -58,158 +58,158 @@
 
 <build>
 	<plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-dependency-plugin</artifactId>
-      <executions>
-        <execution>
-          <id>unpack</id>
-          <phase>process-resources</phase>
-          <goals>
-            <goal>unpack</goal>
-          </goals>
-          <configuration>
-            <artifactItems>
-              <artifactItem>
-                <groupId>tbb</groupId>
-                <artifactId>tbb</artifactId>
-                <version>4.3.update2</version>
-                <type>zip</type>
-                <outputDirectory>${project.basedir}/../lib</outputDirectory>
-                <overWrite>true</overWrite>
-              </artifactItem>
-              <artifactItem>
-                <groupId>log4cxx</groupId>
-                <artifactId>log4cxx</artifactId>
-                <version>0.10.0</version>
-                <type>zip</type>
-                <outputDirectory>${project.basedir}/../lib</outputDirectory>
-                <overWrite>true</overWrite>
-              </artifactItem>
-            </artifactItems>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
-    <plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>exec-maven-plugin</artifactId>
-			<version>${exec-maven-plugin.version}</version>
-			<configuration>
-				<executable>${msbuild.path}/msbuild.exe</executable>
-			</configuration>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-dependency-plugin</artifactId>
+		<executions>
+			<execution>
+				<id>unpack</id>
+				<phase>process-resources</phase>
+				<goals>
+				<goal>unpack</goal>
+				</goals>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>tbb</groupId>
+							<artifactId>tbb</artifactId>
+							<version>4.3.update2</version>
+							<type>zip</type>
+							<outputDirectory>${project.basedir}/../lib</outputDirectory>
+							<overWrite>true</overWrite>
+						</artifactItem>
+						<artifactItem>
+							<groupId>log4cxx</groupId>
+							<artifactId>log4cxx</artifactId>
+							<version>0.10.0</version>
+							<type>zip</type>
+							<outputDirectory>${project.basedir}/../lib</outputDirectory>
+							<overWrite>true</overWrite>
+						</artifactItem>
+					</artifactItems>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+	<plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>exec-maven-plugin</artifactId>
+		<version>${exec-maven-plugin.version}</version>
+		<configuration>
+			<executable>${msbuild.path}/msbuild.exe</executable>
+		</configuration>
+		<executions>
+			<execution>
+				<id>clean</id>
+				<phase>clean</phase>
+				<goals>
+					<goal>exec</goal>
+				</goals>
+				<configuration>
+					<arguments>
+						<argument>${project.basedir}/proj_vs11/libSklt.sln</argument>
+						<argument>/p:Configuration=Release,Platform=x64</argument>
+						<argument>/p:PlatformToolset=v110</argument>
+						<argument>/t:libSklt:Clean</argument>
+					</arguments>
+				</configuration>
+			</execution>
+			<execution>
+				<id>build</id>
+				<phase>compile</phase>
+				<goals>
+					<goal>exec</goal>
+				</goals>
+				<configuration>
+					<arguments>
+						<argument>${project.basedir}/proj_vs11/libSklt.sln</argument>
+						<argument>/m</argument>
+						<argument>/p:Configuration=Release,Platform=x64</argument>
+						<argument>/p:PlatformToolset=v110</argument>
+						<argument>/t:libSklt:ReBuild</argument>
+					</arguments>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-resources-plugin</artifactId>
+		<version>2.5</version>
+		<executions>
+			<execution>
+				<id>build-result</id>
+				<phase>prepare-package</phase>
+				<goals>
+					<goal>copy-resources</goal>
+				</goals>
+				<configuration>
+					<outputDirectory>${project.basedir}</outputDirectory>
+					<resources>
+						<resource>
+							<targetPath>${project.basedir}/target/staging/include</targetPath>
+							<directory>include</directory>
+							<filtering>false</filtering>
+						</resource>
+						<resource>
+							<targetPath>${project.basedir}/target/staging/lib</targetPath>
+							<directory>lib</directory>
+							<filtering>false</filtering>
+						</resource>
+					</resources>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<configuration>
+		<descriptor>${project.basedir}/assembly.xml</descriptor>
+		<finalName>custom-network-lib</finalName>
+		</configuration>
+		<executions>
+			<execution>
+				<phase>package</phase>
+				<goals>
+					<goal>single</goal>
+				</goals>
+			</execution>
+		</executions>
+	</plugin>
+
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-enforcer-plugin</artifactId>
+			<version>${maven-enforcer-plugin.version}</version>
 			<executions>
-        <execution>
-          <id>clean</id>
-          <phase>clean</phase>
-          <configuration>
-            <arguments>
-							<argument>${project.basedir}/proj_vs11/libSklt.sln</argument>
-							<argument>/p:Configuration=Release,Platform=x64</argument>
-							<argument>/p:PlatformToolset=v110</argument>
-							<argument>/t:libSklt:Clean</argument>
-            </arguments>
-          </configuration>
-          <goals>
-            <goal>exec</goal>
-          </goals>			
-        </execution>
 				<execution>
-					<id>build</id>
-					<phase>compile</phase>
+					<id>enforce</id>
+					<phase>validate</phase>
 					<goals>
-            <goal>exec</goal>
-          </goals>
+						<goal>enforce</goal>
+					</goals>
 					<configuration>
-						<arguments>
-							<argument>${project.basedir}/proj_vs11/libSklt.sln</argument>
-							<argument>/m</argument>
-							<argument>/p:Configuration=Release,Platform=x64</argument>
-							<argument>/p:PlatformToolset=v110</argument>
-							<argument>/t:libSklt:ReBuild</argument>
-						</arguments>
+						<rules>
+							<requireOS>
+								<family>windows</family>
+							</requireOS>
+						</rules>
 					</configuration>
 				</execution>
 			</executions>
-		</plugin>
+	</plugin>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-release-plugin</artifactId>
+		<version>${maven-release-plugin.version}</version>
+		<configuration>
+			<goals>deploy</goals>
+		</configuration>
+	</plugin>
 
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-resources-plugin</artifactId>
-    <version>2.5</version>
-    <executions>
-        <execution>
-            <id>build-result</id>
-            <phase>prepare-package</phase>
-            <goals>
-                <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-                <outputDirectory>${project.basedir}</outputDirectory>
-                <resources>                                        
-                    <resource>
-                        <targetPath>${project.basedir}/target/staging/include</targetPath>
-                        <directory>include</directory>
-                        <filtering>false</filtering>
-                    </resource>             
-                    <resource>
-                        <targetPath>${project.basedir}/target/staging/lib</targetPath>
-                        <directory>lib</directory>
-                        <filtering>false</filtering>
-                    </resource>
-                </resources>
-            </configuration>            
-        </execution>
-    </executions>
-</plugin>
-
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-assembly-plugin</artifactId>
-  <configuration>
-    <descriptor>${project.basedir}/assembly.xml</descriptor>
-    <finalName>custom-network-lib</finalName>
-  </configuration>
-  <executions>
-    <execution>
-      <phase>package</phase>
-      <goals>
-        <goal>single</goal>
-      </goals>
-    </execution>
-  </executions>
-</plugin>
-
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-enforcer-plugin</artifactId>
-				<version>${maven-enforcer-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>enforce</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireOS>
-									<family>windows</family>
-								</requireOS>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-release-plugin</artifactId>
-			<version>${maven-release-plugin.version}</version>
-			<configuration>
-				<goals>deploy</goals>
-			</configuration>
-		</plugin>
-
-</plugins>
+	</plugins>
 </build>
 </project>
