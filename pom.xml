@@ -23,7 +23,7 @@
 	<version>1.0</version>
 </parent>
 
-<groupId>internal.poker.poker-server</groupId>
+<groupId>internal.poker.server</groupId>
 <artifactId>custom-network-lib</artifactId>
 <version>1.0-SNAPSHOT</version>
 <packaging>pom</packaging>
