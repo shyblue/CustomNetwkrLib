@@ -2,6 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 
+<repositories>
+    <repository> 
+        <id>internal</id>
+        <url>http://repo.kor.internal/content/groups/public/</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+</repositories>
+ 
+<pluginRepositories>
+    <pluginRepository>
+        <id>internal</id>
+        <url>http://repo.kor.internal/content/groups/public/</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </pluginRepository>
+</pluginRepositories>
+
 <properties>
 	<exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
 	<conf-overlay-windows.version>1.2.1</conf-overlay-windows.version>
