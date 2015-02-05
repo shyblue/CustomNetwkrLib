@@ -114,7 +114,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(BOOST_ROOT);$(TBB_ROOT)\include;$(LOG4CXX_ROOT)\include;$(SolutionDir)..\include</AdditionalIncludeDirectories>
-      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile />
     </ClCompile>
