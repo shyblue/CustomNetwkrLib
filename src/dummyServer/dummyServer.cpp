@@ -14,7 +14,7 @@ void HandlerSet(HandlerManager *handler_manager);
 
 int _tmain()
 {
-	ST_LOGGER.Create("log4cxx.xml");																			   z
+	ST_LOGGER.Create("log4cxx.xml");
 	ST_LOGGER.Info("Dummy Server Start!!!");
 
 	srand((uint32_t)time(NULL));
@@ -55,6 +55,14 @@ int _tmain()
 	return 0;
 }
 
+#pragma pack(1)
+typedef struct tagCK_KEEPALIVE      // keep alive 검사 
+{
+	char    cRes;
+	int     nRes;
+}CK_KEEPALIVE;
+#pragma pack()
+
 StopWatch test_sw;
 std::atomic<int32_t> test_count(0);
 boost::tuple<const char*, size_t> TestProtocol(const char* buffer,  size_t buffer_size)
@@ -63,7 +71,7 @@ boost::tuple<const char*, size_t> TestProtocol(const char* buffer,  size_t buffe
 	size_t  index = 0;
 	int testValue=0;
 	HeaderCCT header;
-//	index += header.GetHeaderSize();
+	//	index += header.GetHeaderSize();
 
 	MEMORY_MANAGER::ReadFromBuffer((char*)buffer,buffer_size,index,&testValue,sizeof(testValue));
 
@@ -73,28 +81,47 @@ boost::tuple<const char*, size_t> TestProtocol(const char* buffer,  size_t buffe
 	}
 	ST_LOGGER.Info("[Packet Handler : TestProtocol] Value[%d] Test nCnt[%d] Elapsemillisec [%d] MilliSec",testValue, nCnt, test_sw.GetElapsedmilliSec().count());
 
-	int32_t idxResponse = 0;
-	idxResponse = 1004 + nCnt;
-	header.Set('S','M','C',101,sizeof(idxResponse),(int32_t)1,0x01);
+	CK_KEEPALIVE ck;
+	ck.cRes = 66;
+	ck.nRes = 100;
+	index = header.MakeHeader(1010,sizeof(ck));
 
 	char*  szResponseBuffer = COMMON_POOL::New(header.GetTotalSize());
-	memset(szResponseBuffer,0x0,16);
+	memset(szResponseBuffer,0x0,header.GetTotalSize());
 
 	header.Serialize(szResponseBuffer,header.GetTotalSize());
-	index = header.GetHeaderSize();
-	MEMORY_MANAGER::WriteToBuffer(szResponseBuffer,header.GetTotalSize(),index,&idxResponse);
+	MEMORY_MANAGER::WriteToBuffer(szResponseBuffer,header.GetTotalSize(),index,&ck);
 
-	//std::stringstream hexCode;
-	//for (size_t idx = 0; idx < header.GetTotalSize(); ++idx)
-	//{
-	//	hexCode << std::hex << static_cast<int16_t>(szResponseBuffer[idx]);
-	//}
-	//ST_LOGGER.Info("[Packet Handler : TestProtocol] [HEX CODE : %s][%d] Response[%d]", hexCode.str().c_str(),header.GetTotalSize(),idxResponse);
+	// Ender 만들고, 붙여넣자
+	header.MakeEnder(test_count);
+	MEMORY_MANAGER::WriteToBuffer(szResponseBuffer,header.GetTotalSize(),index,header.GetEnder(),header.GetEnderSize());
+
+	std::stringstream hexCode;
+	for (size_t idx = 0; idx < header.GetTotalSize(); ++idx)
+	{
+		hexCode << std::hex << static_cast<int16_t>(szResponseBuffer[idx]);
+	}
+	ST_LOGGER.Info("[Packet Handler : TestProtocol] [HEX CODE : %s][%d]", hexCode.str().c_str(),header.GetTotalSize());
 
 	return boost::tuple<const char*, size_t>(const_cast<const char*>(szResponseBuffer), (const size_t&)header.GetTotalSize());
+}
+
+boost::tuple<const char*, size_t> KeepAlive(const char* buffer,  size_t buffer_size)
+{
+	size_t  index = 0;
+	HeaderCCT header;
+
+	CK_KEEPALIVE ck;
+
+	MEMORY_MANAGER::ReadFromBuffer((char*)buffer,buffer_size,index,&ck,sizeof(ck));
+
+	ST_LOGGER.Info("[Packet Handler : KeepAlive] Value[%x] Test nCnt[%d]",ck.cRes, ck.nRes);
+
+	return boost::tuple<const char*, size_t>(nullptr, (const size_t&)0);
 }
 
 void HandlerSet(HandlerManager *handler_manager)
 {
 	handler_manager->ProtocolRegister(101, TestProtocol );
+	handler_manager->ProtocolRegister(501, KeepAlive );
 }

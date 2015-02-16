@@ -4,7 +4,7 @@
 #include "util/byte_order.h"
 #include "net/header.h"
 
-size_t Header::GetEndMakerSize()
+size_t Header::GetEnderSize()
 {
 	return 0;
 }

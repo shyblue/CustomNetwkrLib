@@ -12,7 +12,7 @@
 <artifactId>custom-network-lib</artifactId>
 <version>1.0-SNAPSHOT</version>
 <packaging>pom</packaging>
-<name>Session server based on new common network library</name>
+<name>Custom Netwok Library for Poker IV Project</name>
 
 <properties>
 	<exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
@@ -50,7 +50,7 @@
 	</dependency>	
 		<dependency>
       <groupId>internal.poker.server</groupId>
-      <artifactId>custom-network-library</artifactId>
+      <artifactId>custom-network-lib</artifactId>
 			<version>${project.deploy.version}</version>
 		</dependency>	
 		<dependency>

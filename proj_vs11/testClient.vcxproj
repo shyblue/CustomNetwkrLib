@@ -105,13 +105,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>D:\Work\libs\log4cxx-0.10.0\include;D:\Work\libs\boost\1_55_0;D:\Work\libs\tbb\include;$(SolutionDir)/../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(LOG4CXX_ROOT)\include;$(BOOST_ROOT);$(TBB_ROOT)\include;$(SolutionDir)/../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\lib;D:\Work\libs\tbb\lib\intel64\vc11;D:\Work\libs\boost\1_55_0\lib64-msvc-11.0;D:\Work\libs\log4cxx-0.10.0\vs2012\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\lib;$(TBB_ROOT)\lib\intel64\vc11;$(BOOST_ROOT)\lib64-msvc-11.0;$(LOG4CXX_ROOT)\vs2012\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>libSklt_$(Configuration).lib;log4cxx_$(Platform)_$(Configuration)_Shared.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>

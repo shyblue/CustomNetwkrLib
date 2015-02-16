@@ -41,8 +41,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	char recvBuffer[20]={0,};
 	size_t recvBufferSize = 20;
 
-//	size_t HeaderCCT::Serialize(char &version,char &sign1,char &sign2,uint16_t &protocolNo,uint16_t &dataLen,int32_t &handle,char &find_sig)
-	pHeader->Set('S','M','C',nProtocol,(uint16_t)4,(int32_t)1,0x01);
+	pHeader->MakeHeader(nProtocol,sizeof(int));
 	pHeader->Serialize(sendbuffer,pHeader->GetTotalSize());
 
 	size_t index = 0;

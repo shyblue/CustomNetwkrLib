@@ -100,7 +100,7 @@ bool AsyncSessionImpl::ReadHeader( const boost::system::error_code & error, size
 		return false;
 	}
 
-	m_sizeOfBodyBuffer =  m_spHeader->GetBodySize();
+	m_sizeOfBodyBuffer =  m_spHeader->GetBodySize() + m_spHeader->GetEnderSize();
 
 	if( AsyncSessionImpl::m_sizeOfMaxBuffer < m_sizeOfBodyBuffer ) 
 	{
@@ -128,7 +128,7 @@ bool AsyncSessionImpl::ReadBody(const boost::system::error_code & error, size_t 
 	if (m_spHeader->CheckEndmarker(m_szBodyBuffer, byte_transferred) && !error && (m_sizeOfBodyBuffer == byte_transferred) )
 	{	
 		auto self(shared_from_this());
-		boost::shared_ptr<PacketInfo> ptr = boost::make_shared<PacketInfo>(self, m_spHeader->GetProtocolNo(), m_szBodyBuffer, m_sizeOfBodyBuffer - m_spHeader->GetEndMakerSize());
+		boost::shared_ptr<PacketInfo> ptr = boost::make_shared<PacketInfo>(self, m_spHeader->GetProtocolNo(), m_szBodyBuffer, m_sizeOfBodyBuffer - m_spHeader->GetEnderSize());
 		m_spWorkerManager->Insert(*ptr);
 		m_szBodyBuffer = nullptr;
 	}
@@ -175,6 +175,7 @@ void AsyncSessionImpl::SendProcess(const char* data, const size_t data_length)
 				Close();
 				return;
 			}
+			ST_LOGGER.Trace("[AsyncSessionImpl][SendProcess] Send packet complete [%d]", bytes_transferred);
 		});
 	}
 	catch(std::exception exception)

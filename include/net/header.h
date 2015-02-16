@@ -11,8 +11,8 @@ public:
 	virtual ~Header(void) {};
 	virtual size_t GetHeaderSize() = 0;
 	virtual size_t GetBodySize() = 0;
+	virtual size_t GetEnderSize() = 0;
 	virtual size_t GetTotalSize(void) = 0;
-	virtual size_t GetEndMakerSize();
 	virtual size_t Serialize(char* buffer, size_t buffersize) = 0;
 	virtual size_t Deserialize(char* buffer, size_t buffersize) = 0;
 	virtual bool Validate() = 0;
@@ -27,7 +27,7 @@ public:
 	virtual uint16_t GetProtocolNo() = 0;
 
 	size_t			m_sizeOfHeader;
-//	uint32_t		m_constEndMark;
+	size_t			m_sizeOfEnder;
 };
 
 #endif // _HEADER_H_
