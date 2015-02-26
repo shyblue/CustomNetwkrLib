@@ -5,18 +5,18 @@
 #include "util/logger.h"
 #include "net/async_session_pool.h"
 #include "net/header_factory.h"
+#include "net/hive_server.h"
 
-AsyncSessionPool::AsyncSessionPool(boost::asio::io_service* pio_service, const PacketWorkerManagerPtr& packet_worker_manager, const size_t pool_cnt) : 
-	m_ioService(pio_service)
+AsyncSessionPool::AsyncSessionPool(HiveServer* p_hive, const PacketWorkerManagerPtr& packet_worker_manager, const size_t pool_cnt)
 {
-	Initialize(packet_worker_manager, pool_cnt);
+	Initialize(p_hive,packet_worker_manager, pool_cnt);
 }
 
 AsyncSessionPool::~AsyncSessionPool(void)
 {
 }
 
-void AsyncSessionPool::Initialize(const PacketWorkerManagerPtr& packet_worker_manager, const size_t pool_amt)
+void AsyncSessionPool::Initialize(HiveServer* p_hive, const PacketWorkerManagerPtr& packet_worker_manager, const size_t pool_amt)
 {
 	try
 	{	
@@ -25,7 +25,7 @@ void AsyncSessionPool::Initialize(const PacketWorkerManagerPtr& packet_worker_ma
 
 		for(size_t i(0); i < nSessionPoolAmt; ++i)
 		{
-			boost::shared_ptr<AsyncSessionImpl> p =  boost::make_shared<AsyncSessionImpl>(m_ioService, HEADER_FACTORY()->MakeHeader(), packet_worker_manager);
+			boost::shared_ptr<AsyncSessionImpl> p(new AsyncSessionImpl(p_hive, HEADER_FACTORY()->MakeHeader(), packet_worker_manager) );
 			p->SetId(i);
 			p->SetSessionPool(this);
 			Create(p);

@@ -19,7 +19,7 @@ class PacketWorker :
 {
 public:
 	typedef boost::shared_ptr<HandlerManager> HandlerManagerPtr;
-	typedef boost::tuple<const char*, size_t> ResultObject;
+	typedef boost::tuple<int32_t,char*,size_t> ResultObject;
 
 	explicit PacketWorker(HandlerManager* p_handler_manager, PacketWorkerManager* p_packet_worker_manager);
 	virtual ~PacketWorker();

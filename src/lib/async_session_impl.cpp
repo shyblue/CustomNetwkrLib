@@ -11,22 +11,25 @@
 #include "net/async_session_pool.h"
 #include "net/packet_worker_manager.h"
 #include "net/header.h"
+#include "net/hive_server.h"
 #include "util/common_pool.h"
 #include "util/memory_manager.h"
 #include "util/logger.h"
 #include "util/configure.h"
 
 
-AsyncSessionImpl::AsyncSessionImpl(boost::asio::io_service* io_service, Header* p_header,const PacketWorkerManagerPtr& packet_worker_manager) :
-	SessionBase(io_service)
+AsyncSessionImpl::AsyncSessionImpl(HiveServer* p_hive, Header* p_header,const PacketWorkerManagerPtr& packet_worker_manager) :
+	SessionBase(&p_hive->GetService())
+	,m_pHive(p_hive)
 	,m_spWorkerManager(packet_worker_manager)
-	,m_szHeaderBuffer(0)
-	,m_szBodyBuffer(0)
+	,m_szHeaderBuffer(nullptr)
+	,m_szBodyBuffer(nullptr)
 	,m_sizeOfBodyBuffer(0)
 	,m_nSessionPoolState(SessionPoolState::kNoneRegister)
 	,m_id(0)
 	,m_sizeOfMaxBuffer(ST_CONFIG()->GetConfigureData<size_t>("CONFIGURE.SESSION_BUFFER_MAX", 32768))
-	,m_strand(*io_service)
+	,m_ioStrand(p_hive->GetService())
+	,m_timer(p_hive->GetService())
 {
 	m_spHeader.reset(p_header);
 }
@@ -57,7 +60,7 @@ bool AsyncSessionImpl::Recv(char* buffer, size_t buffer_size)
 void AsyncSessionImpl::RecvProcess()
 {
 	auto self(shared_from_this());
-	boost::asio::spawn( m_strand ,
+	boost::asio::spawn( m_ioStrand ,
 		[this,self](boost::asio::yield_context yield)
 		{
 			boost::system::error_code error;
@@ -128,7 +131,7 @@ bool AsyncSessionImpl::ReadBody(const boost::system::error_code & error, size_t 
 	if (m_spHeader->CheckEndmarker(m_szBodyBuffer, byte_transferred) && !error && (m_sizeOfBodyBuffer == byte_transferred) )
 	{	
 		auto self(shared_from_this());
-		boost::shared_ptr<PacketInfo> ptr = boost::make_shared<PacketInfo>(self, m_spHeader->GetProtocolNo(), m_szBodyBuffer, m_sizeOfBodyBuffer - m_spHeader->GetEnderSize());
+		boost::shared_ptr<PacketInfo> ptr(new PacketInfo(self, m_spHeader->GetProtocolNo(), m_szBodyBuffer, m_sizeOfBodyBuffer - m_spHeader->GetEnderSize(),1) );
 		m_spWorkerManager->Insert(*ptr);
 		m_szBodyBuffer = nullptr;
 	}
@@ -166,7 +169,7 @@ void AsyncSessionImpl::SendProcess(const char* data, const size_t data_length)
 		auto self(shared_from_this());
 		
 		boost::asio::async_write(m_tcpSocket,boost::asio::buffer(data,data_length),
-		[this,self,data,&data_length](boost::system::error_code error,size_t bytes_transferred)
+		[&,data,data_length](boost::system::error_code error,size_t bytes_transferred)
 		{
 			COMMON_POOL::Delete((char*)data, data_length);
 			if(error)
@@ -250,18 +253,94 @@ void AsyncSessionImpl::MakeHexCode()
 	{
 		std::stringstream hexCode;
 
+		hexCode << "=====================HEADER=====================" << std::endl;
 		for(size_t idx=0;idx<m_spHeader->GetHeaderSize();++idx)
 		{
-			hexCode << std::hex << std::setfill('0') << std::setw(2) << static_cast<int16_t>((BYTE)m_szHeaderBuffer[idx]);
-			if(idx < m_spHeader->GetHeaderSize()-1) hexCode << " ";
+			hexCode << std::hex << std::setfill('0') << std::setw(2) << static_cast<int16_t>((BYTE)m_szHeaderBuffer[idx]) << " ";
+			if( (idx+1)%16 == 0 ) hexCode << std::endl;
 		}
-		hexCode << "|";
+		hexCode << std::endl;
+		hexCode << "======================BODY======================" << std::endl;
 		for(size_t idx=0;idx<m_spHeader->GetBodySize();++idx)
 		{
-			hexCode << std::hex << std::setfill('0') << std::setw(2) << static_cast<int16_t>((BYTE)m_szBodyBuffer[idx]);
-			if(idx < m_spHeader->GetBodySize()-1) hexCode << " ";
+			hexCode << std::hex << std::setfill('0') << std::setw(2) << static_cast<int16_t>((BYTE)m_szBodyBuffer[idx]) << " ";
+			if( (idx+1)%16 == 0 ) hexCode << std::endl;
 		}
+		hexCode << std::endl;
 
-		ST_LOGGER.Trace("[PACKET HEX CODE] [%s]", hexCode.str().c_str());
+		ST_LOGGER.Trace("[PACKET HEX CODE]\n%s", hexCode.str().c_str());
 	}
+}
+
+bool AsyncSessionImpl::HasError()
+{
+	return ( boost::interprocess::ipcdetail::atomic_cas32( &m_errorState, 1, 1 ) == 1 );
+}
+
+void AsyncSessionImpl::DispatchSend( std::vector< uint8_t > buffer )
+{
+
+}
+
+void AsyncSessionImpl::HandleTimer( const boost::system::error_code & error )
+{
+	if( error || HasError() || m_pHive->HasStopped() )
+	{
+		StartError( error );
+	}
+	else
+	{
+		OnTimer( boost::posix_time::microsec_clock::local_time() - m_lastTime );
+		StartTimer();
+	}
+}
+
+void AsyncSessionImpl::DispatchTimer( const boost::system::error_code & error )
+{
+}
+
+void AsyncSessionImpl::StartTimer()
+{
+	m_lastTime = boost::posix_time::microsec_clock::local_time();
+	m_timer.expires_from_now( boost::posix_time::milliseconds( m_timerInterval ) );
+
+	auto self(shared_from_this());
+	m_timer.async_wait( m_ioStrand.wrap([&](boost::system::error_code ec){HandleTimer(ec);}) );
+}
+
+void AsyncSessionImpl::StartError( const boost::system::error_code & error )
+{
+	if( boost::interprocess::ipcdetail::atomic_cas32( &m_errorState, 1, 0 ) == 0 )
+	{
+		boost::system::error_code ec;
+		m_tcpSocket.shutdown( boost::asio::ip::tcp::socket::shutdown_both, ec );
+		m_tcpSocket.close( ec );
+		m_timer.cancel( ec );
+		OnError( error );
+	}
+}
+
+void AsyncSessionImpl::OnAccept( boost::asio::ip::tcp::endpoint end_point )
+{
+	Recv();
+}
+
+void AsyncSessionImpl::OnConnect( boost::asio::ip::tcp::endpoint end_point )
+{
+}
+
+void AsyncSessionImpl::OnSend( const std::vector< uint8_t > & buffer )
+{
+}
+
+void AsyncSessionImpl::OnRecv( std::vector< uint8_t > & buffer )
+{
+}
+
+void AsyncSessionImpl::OnTimer( const boost::posix_time::time_duration & delta )
+{
+}
+
+void AsyncSessionImpl::OnError( const boost::system::error_code & error )
+{
 }

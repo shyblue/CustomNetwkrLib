@@ -39,9 +39,8 @@ size_t HeaderCCT::Serialize(char* p_buffer, size_t size_of_buffer)
 
 	MEMORY_MANAGER::WriteToBuffer(p_buffer, size_of_buffer, index, &m_header, sizeof(SD_HEADER));
 
-	return index;	
+	return index;
 }
-
 
 size_t HeaderCCT::Deserialize(char* p_buffer, size_t size_of_buffer)
 {
@@ -93,7 +92,6 @@ void HeaderCCT::SetDataSize(size_t size)
 
 void HeaderCCT::HostToNetwork()
 {
-
 }
 void HeaderCCT::NetworkToHost()
 {
@@ -105,7 +103,7 @@ void HeaderCCT::NetworkToHost()
 }
 
 size_t HeaderCCT::MakeHeader(uint16_t protocol_no,uint32_t data_len)
-{							 
+{
 	size_t index = 0;
 
 	m_protocolNo = protocol_no;
@@ -113,11 +111,11 @@ size_t HeaderCCT::MakeHeader(uint16_t protocol_no,uint32_t data_len)
 
 	memcpy( m_header.szSign, "G~E%tXO", 7 ); // m_szSIGN -> "B~LC&pQ"
 	m_header.type			= BYTE_ORDER::host_to_network(protocol_no);
-	m_header.nHandle		= BYTE_ORDER::host_to_network(1);    
+	m_header.nHandle		= BYTE_ORDER::host_to_network(1);
 	m_header.cFindSig		= 'P'; // FIND_SIG
 	m_header.cVer			= BYTE_ORDER::host_to_network(uint16_t( 1111 ));
 	m_header.length			= BYTE_ORDER::host_to_network(data_len);
-	m_header.wOpt			= BYTE_ORDER::host_to_network(uint16_t( rand() % 40 )); // KEY_NUM -> 40 
+	m_header.wOpt			= BYTE_ORDER::host_to_network(uint16_t( rand() % 40 )); // KEY_NUM -> 40
 	m_header.cEncType		= 0; // SDENC_DES
 
 	return sizeof(m_header);

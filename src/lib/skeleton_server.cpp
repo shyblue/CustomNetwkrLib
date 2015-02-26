@@ -56,6 +56,7 @@ bool SkltServer::StartAccept()
 				ST_LOGGER.Trace("[ServerBase][StartAccept] Client connect session id(%d)", pSession->GetId());
 				pSession->SetSessionPoolState(AsyncSessionImpl::kAcquire);
 				pSession->Recv();
+				OnAccept(pSession);
 			}
 			else
 			{
@@ -65,4 +66,9 @@ bool SkltServer::StartAccept()
 	});
 
 	return true;
+}
+
+bool SkltServer::OnAccept(AsyncSessionImplPtr pSession)
+{
+ 	return true;
 }

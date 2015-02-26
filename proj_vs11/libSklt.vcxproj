@@ -15,6 +15,7 @@
     <ClCompile Include="..\src\lib\async_session_pool.cpp" />
     <ClCompile Include="..\src\lib\byte_order.cpp" />
     <ClCompile Include="..\src\lib\configure.cpp" />
+    <ClCompile Include="..\src\lib\hive_server.cpp" />
     <ClCompile Include="..\src\lib\sync_session_pool.cpp" />
     <ClCompile Include="..\src\lib\db_connector.cpp" />
     <ClCompile Include="..\src\lib\handler_manager.cpp" />
@@ -23,7 +24,6 @@
     <ClCompile Include="..\src\lib\packet_worker.cpp" />
     <ClCompile Include="..\src\lib\packet_worker_manager.cpp" />
     <ClCompile Include="..\src\lib\redis_connector.cpp" />
-    <ClCompile Include="..\src\lib\skeleton_server.cpp" />
     <ClCompile Include="..\src\lib\session_base.cpp" />
     <ClCompile Include="..\src\lib\stop_watch.cpp" />
     <ClCompile Include="..\src\lib\string_util.cpp" />
@@ -39,13 +39,13 @@
     <ClInclude Include="..\include\library.h" />
     <ClInclude Include="..\include\net\async_session_impl.h" />
     <ClInclude Include="..\include\net\async_session_pool.h" />
+    <ClInclude Include="..\include\net\hive_server.h" />
     <ClInclude Include="..\include\net\sync_session_pool.h" />
     <ClInclude Include="..\include\net\header.h" />
     <ClInclude Include="..\include\net\header_factory.h" />
     <ClInclude Include="..\include\net\network_define.h" />
     <ClInclude Include="..\include\net\packet_worker.h" />
     <ClInclude Include="..\include\net\packet_worker_manager.h" />
-    <ClInclude Include="..\include\net\skeleton_server.h" />
     <ClInclude Include="..\include\net\session_base.h" />
     <ClInclude Include="..\include\net\session_pool.h" />
     <ClInclude Include="..\include\net\sync_session.h" />

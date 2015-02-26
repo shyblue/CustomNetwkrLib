@@ -29,6 +29,7 @@ public:
 
 private:
 	bool StartAccept();
+	bool OnAccept(AsyncSessionImplPtr pSession);
 
 	boost::asio::io_service			m_ioService;
 	boost::asio::ip::tcp::acceptor	m_ioAcceptor;

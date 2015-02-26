@@ -25,7 +25,7 @@ bool PacketWorkerManager::Initialize(HandlerManager * p_handler_manager)
 	{
 		for(int i = 0; i < m_workerCnt; ++i)
 		{
-			boost::shared_ptr<PacketWorker> sp = boost::make_shared<PacketWorker>(p_handler_manager,this);
+			boost::shared_ptr<PacketWorker> sp( new PacketWorker(p_handler_manager,this) );
 			sp->Run(i+1);
 			m_workers.push_back(sp);
 		}

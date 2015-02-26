@@ -14,7 +14,7 @@ HandlerManager::~HandlerManager(void)
 }
 
 
-HandlerManager::ResultObject HandlerManager::Processing(const int32_t protocol_no, const char* buffer, const size_t size_of_buffer)
+HandlerManager::ResultObject HandlerManager::Processing(const int32_t protocol_no,const char* buffer, const size_t size_of_buffer)
 {
 	FunctionObject* objFunc = m_handler->Getvalue(protocol_no);
 

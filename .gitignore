@@ -38,5 +38,7 @@ $RECYCLE.BIN/
 *.exe
 *.pdb
 *.lib
+*.vsp
+*.psess
 target/
 proj_vs11/Release/

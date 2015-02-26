@@ -22,9 +22,14 @@ class Header;
 template<typename T>
 class SessionPool;
 class AsyncSessionPool;
+class HiveServer;
+class Acceptor;
 
 class AsyncSessionImpl : public boost::enable_shared_from_this<AsyncSessionImpl>, public SessionBase
 {
+	friend class HiveServer;
+	friend class Acceptor;
+	friend class PacketWorker;
 public:
 	
 	typedef boost::shared_ptr<PacketWorkerManager>	PacketWorkerManagerPtr;
@@ -37,21 +42,23 @@ public:
 		kRestore,
 	};
 
-	explicit AsyncSessionImpl(boost::asio::io_service* io_service, Header* p_header, const PacketWorkerManagerPtr& packetdeliver_factory);
+	explicit AsyncSessionImpl(HiveServer* p_hive, Header* p_header, const PacketWorkerManagerPtr& packetdeliver_factory);
 	~AsyncSessionImpl();
 
 	virtual bool Recv(char* buffer = 0, size_t buffer_size = 0);
 	virtual bool Send(const char* data, const size_t data_length);
 	virtual bool Close();
 
+	bool HasError();
+
 	void SetSessionPool(AsyncSessionPool* p_session_pool);
 	void SetSessionPoolState(SessionPoolState state) { m_nSessionPoolState = (uint8_t)state; };
 
 	void SetId(size_t id) {m_id = id;}
 	size_t GetId() {return m_id;}
+	boost::asio::strand& GetStrand() {return m_ioStrand;}
 
 	bool BufferRelease(char* buffer, uint32_t buffer_size);
-
 private :		
 	void RecvProcess();
 	bool ReadHeader(const boost::system::error_code & error, size_t byte_transferred );
@@ -62,9 +69,35 @@ private :
 
 	void MakeHexCode();
 
+	void StartSend();
+	void StartRecv( int32_t total_bytes );
+	void StartTimer();
+	void StartError( const boost::system::error_code & error );
+	void DispatchSend( std::vector< uint8_t > buffer );
+	void DispatchRecv( int32_t total_bytes );
+	void DispatchTimer( const boost::system::error_code & error );
+	void HandleConnect( const boost::system::error_code & error );
+	void HandleSend( const boost::system::error_code & error, std::list< std::vector< uint8_t > >::iterator itr );
+	void HandleRecv( const boost::system::error_code & error, int32_t actual_bytes );
+	void HandleTimer( const boost::system::error_code & error );
+
+	virtual void OnAccept( boost::asio::ip::tcp::endpoint end_point );
+	virtual void OnConnect( boost::asio::ip::tcp::endpoint end_point );
+	virtual void OnSend( const std::vector< uint8_t > & buffer );
+	virtual void OnRecv( std::vector< uint8_t > & buffer );
+	virtual void OnTimer( const boost::posix_time::time_duration & delta );
+	virtual void OnError( const boost::system::error_code & error );
+
 	AsyncSessionPool*			m_pSessionPool;
 	HeaderPtr					m_spHeader;
 	PacketWorkerManagerPtr		m_spWorkerManager;
+	HiveServer*					m_pHive;
+
+	boost::asio::strand			m_ioStrand;
+	boost::asio::deadline_timer m_timer;
+	boost::posix_time::ptime	m_lastTime;
+	int32_t						m_timerInterval;
+
 
 	char*						m_szHeaderBuffer;
 	char*						m_szBodyBuffer;
@@ -75,7 +108,7 @@ private :
 	size_t						m_sizeOfMaxBuffer;
 
 	uint8_t						m_nSessionPoolState;
-	boost::asio::strand			m_strand;
+	volatile	uint32_t		m_errorState;
 };
 
 #endif // _SESSION_H_

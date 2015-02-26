@@ -38,7 +38,8 @@ void PacketWorker::Task(int worker_id)
 }
 void PacketWorker::Run(int worker_id)
 {
-	m_pThread = new boost::thread( [this,worker_id](){ Task( worker_id ); } );
+	auto self = shared_from_this();
+	m_pThread = new boost::thread( [&](){ Task( worker_id ); } );
 }
 
 void PacketWorker::Processing()
@@ -50,17 +51,27 @@ void PacketWorker::Processing()
 
 void PacketWorker::Processing(PacketInfo& packet)
 {
-	ST_LOGGER.Trace("[Worker:%d][%d] Pacekt.protocol_no [%d]", m_nWorkerId,m_pThread->get_id(), packet.m_protocolNo);
+	ST_LOGGER.Trace("[Worker:%d][%d] Pacekt protocol_no [%d] Packet direction[%d]", m_nWorkerId,m_pThread->get_id(), packet.m_protocolNo, static_cast<int>(packet.m_direction));
 
-	ResultObject resultObject = PacketWorker::m_spHandlerManager->Processing(packet.m_protocolNo, packet.m_pBuffer, packet.m_sizeOfBuffer);
-
-	if(packet.m_pBuffer && packet.m_sizeOfBuffer > 0)
+	if(packet.m_direction)
 	{
-		packet.m_pAsyncSessionImp->BufferRelease(packet.m_pBuffer, static_cast<uint32_t>(packet.m_sizeOfBuffer));
+		ResultObject resultObject = PacketWorker::m_spHandlerManager->Processing(packet.m_protocolNo, packet.m_pBuffer, packet.m_sizeOfBuffer);
+
+		if(packet.m_pBuffer && packet.m_sizeOfBuffer > 0)
+		{
+			packet.m_pAsyncSessionImp->BufferRelease(packet.m_pBuffer, static_cast<uint32_t>(packet.m_sizeOfBuffer));
+		}
+
+		if(resultObject.get<1>() && resultObject.get<2>() > 0)
+		{
+			boost::shared_ptr<PacketInfo> ptr(new PacketInfo(packet.m_pAsyncSessionImp, resultObject.get<0>(), resultObject.get<1>(), resultObject.get<2>(),0 ) );
+			m_pPacketWorkerManager->Insert(*ptr);
+
+		}
 	}
-
-	if(resultObject.get<0>() && resultObject.get<1>() > 0)
-	{
-		packet.m_pAsyncSessionImp->Send(resultObject.get<0>(), resultObject.get<1>());
+	else
+	{											  
+		auto pSession = packet.m_pAsyncSessionImp;
+		pSession->GetStrand().post([packet,pSession]{pSession->Send(packet.m_pBuffer,packet.m_sizeOfBuffer); });
 	}
 }

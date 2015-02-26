@@ -27,7 +27,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	testClient.SetSendTimeout(tm);
 	testClient.SetRecvTimeout(tm);
 
-	if(!testClient.Connect(std::string("127.0.0.1"),std::string("12800")))
+	if(!testClient.Connect(std::string("127.0.0.1"),std::string("8000")))
 	{
 		ST_LOGGER.Error("Can't connect to server.");
 		return -1;
